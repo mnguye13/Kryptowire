@@ -75,7 +75,7 @@ function Reminder() {
         setIntervalIsSet(null);
       }
     };
-  });
+  }, []);
   //Funtion show create form
 
   function showCreateForm() {
