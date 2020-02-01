@@ -104,7 +104,7 @@ function Reminder() {
 
   //Function to fecth data from db
   function getDataFromDB() {
-    fetch("http://localhost:3003/infos")
+    fetch("http://localhost:3001/infos")
       .then(data => data.json())
       .then(res => setData(res.data));
   }
@@ -116,7 +116,7 @@ function Reminder() {
     while (currentIds.includes(idToBeAdded)) {
       ++idToBeAdded;
     }
-    axios.post("http://localhost:3003/infos", {
+    axios.post("http://localhost:3001/infos", {
       id: idToBeAdded,
       fullname: fullname,
       email: email
@@ -137,7 +137,7 @@ function Reminder() {
         objIdToDelete = dat._id;
       }
     });
-    axios.delete(`http://localhost:3003/infos/${objIdToDelete}`);
+    axios.delete(`http://localhost:3001/infos/${objIdToDelete}`);
 
     console.log(objIdToDelete);
   }
@@ -156,7 +156,7 @@ function Reminder() {
     console.log(objIdToUpdate);
 
     axios
-      .patch(`http://localhost:3003/infos/${objIdToUpdate}`, {
+      .patch(`http://localhost:3001/infos/${objIdToUpdate}`, {
         fullname: updatedFullName,
         email: updadatedEmail
       })
@@ -164,6 +164,9 @@ function Reminder() {
     setShowUpdateForm(false);
   }
 
+  function redirectInfo(id) {
+    history.push(`/infos/${id}`);
+  }
   function handleKeyDown(event, index) {
     if (event.key === "Enter") {
       createTodoAtIndex(event, index);
@@ -326,6 +329,11 @@ function Reminder() {
                   {dat.fullname} <br />
                   <span style={{ color: "gray" }}> Email: </span> {dat.email}{" "}
                   <br />
+                  <Button
+                    intent="success"
+                    text="View"
+                    onClick={() => redirectInfo(dat._id)}
+                  />
                   <Button
                     intent="warning"
                     text="Update Email"

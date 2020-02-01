@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Reminder from "./pages/Reminder";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
+import Infos from "./pages/Infos";
 import PrivateRoute from "./PrivateRoute";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -48,6 +49,7 @@ function App(props) {
         <Route path="/users" component={Login} />
         <Route path="/reminder" component={Reminder} />
         <Route path="/settings" component={Settings} />
+        <Route path="/infos" component={Infos} />
         <Route path="*" component={() => "404 NOT FOUND"} />
       </Switch>
     </Router>
