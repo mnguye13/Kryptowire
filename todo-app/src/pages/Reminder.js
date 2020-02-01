@@ -67,7 +67,7 @@ function Reminder() {
 
     getDataFromDB();
     if (!intervalIsSet) {
-      let interval = setInterval(getDataFromDB, 60000);
+      let interval = setInterval(getDataFromDB, 3000);
       setIntervalIsSet(interval);
     }
     return function cleanUp() {
