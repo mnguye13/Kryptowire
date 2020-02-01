@@ -21,6 +21,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setAuthenticate, setUnAuthenticate, setUser } from "../actions";
 import { authenticateSlice } from "../slice/setSlice";
+import { set } from "mongoose";
 
 function Reminder() {
   const [names, setNames] = useState("Minh Nguyen");
@@ -62,7 +63,7 @@ function Reminder() {
   ]);
 
   useEffect(() => {
-    //setInterval(tick, 1000);
+    setInterval(tick, 1000);
 
     getDataFromDB();
     if (!intervalIsSet) {
@@ -79,18 +80,31 @@ function Reminder() {
   //Funtion show create form
 
   function showCreateForm() {
+    setID("");
+    setFullName("");
+    setEmail("");
     setShowForm(true);
+    setShowUpdateForm(false);
   }
 
   //Funtion show update form
 
-  function showUpdateForm() {
+  function showUpdateForm(id, fullname, email) {
+    setID(id);
+    setFullName(fullname);
+    setEmail(email);
     setShowUpdateForm(true);
+    setShowForm(false);
+  }
+
+  function cancelForm() {
+    setShowUpdateForm(false);
+    setShowForm(false);
   }
 
   //Function to fecth data from db
   function getDataFromDB() {
-    fetch("http://localhost:3001/api/getData")
+    fetch("http://localhost:3003/infos")
       .then(data => data.json())
       .then(res => setData(res.data));
   }
@@ -102,7 +116,7 @@ function Reminder() {
     while (currentIds.includes(idToBeAdded)) {
       ++idToBeAdded;
     }
-    axios.post("http://localhost:3001/api/createData", {
+    axios.post("http://localhost:3003/infos", {
       id: idToBeAdded,
       fullname: fullname,
       email: email
@@ -110,6 +124,7 @@ function Reminder() {
 
     setFullName("");
     setEmail("");
+    setShowForm(false);
   }
   //Function to remove data from db
 
@@ -122,18 +137,15 @@ function Reminder() {
         objIdToDelete = dat._id;
       }
     });
-    axios.delete("http://localhost:3001/api/deleteData", {
-      data: {
-        id: objIdToDelete
-      }
-    });
+    axios.delete(`http://localhost:3003/infos/${objIdToDelete}`);
+
     console.log(objIdToDelete);
   }
 
   //Funtion to update data from db
 
   function updateDB(idToUpdate, updatedFullName, updadatedEmail) {
-    console.log(idToUpdate, updateName, updadatedEmail);
+    console.log(idToUpdate, updatedFullName, updadatedEmail);
     let objIdToUpdate = null;
     parseInt(idToUpdate);
     data.forEach(dat => {
@@ -141,14 +153,15 @@ function Reminder() {
         objIdToUpdate = dat._id;
       }
     });
+    console.log(objIdToUpdate);
 
-    axios.post("http://localhost:3001/api/updateData", {
-      id: idToUpdate,
-      update: {
+    axios
+      .patch(`http://localhost:3003/infos/${objIdToUpdate}`, {
         fullname: updatedFullName,
         email: updadatedEmail
-      }
-    });
+      })
+      .then(response => console.log(response));
+    setShowUpdateForm(false);
   }
 
   function handleKeyDown(event, index) {
@@ -308,15 +321,17 @@ function Reminder() {
           {data.length <= 0
             ? " NO DB ENTRIES"
             : data.map(dat => (
-                <li style={{ padding: "10px" }} key={data.email}>
+                <li style={{ padding: "10px" }} key={data._id}>
                   <span style={{ color: "gray" }}> Full name: </span>{" "}
                   {dat.fullname} <br />
                   <span style={{ color: "gray" }}> Email: </span> {dat.email}{" "}
                   <br />
                   <Button
                     intent="warning"
-                    text="Update"
-                    onClick={() => showUpdateForm()}
+                    text="Update Email"
+                    onClick={() =>
+                      showUpdateForm(dat.id, dat.fullname, dat.email)
+                    }
                   />
                   <Button
                     intent="danger"
@@ -357,7 +372,11 @@ function Reminder() {
                 intent="primary"
                 text="Submit Data"
                 onClick={() => createDataToDB(fullname, email)}
-                //onClick={() => alert(id + fullname + email)}
+              />
+              <Button
+                intent="none"
+                text="Cancel"
+                onClick={() => cancelForm()}
               />
             </div>
           )}
@@ -365,14 +384,10 @@ function Reminder() {
         <ul>
           {showUpdate && (
             <div>
-              <FormGroup
-                label="Full name"
-                labelFor="text-input"
-                labelInfo="(required)"
-                helperText="Change Full Name"
-              >
+              <FormGroup label="Full name" labelFor="text-input">
                 <InputGroup
                   id="text-input"
+                  disabled
                   placeholder="Enter Full Name"
                   value={fullname}
                   onChange={e => setFullName(e.target.value)}
@@ -394,8 +409,12 @@ function Reminder() {
               <Button
                 intent="primary"
                 text="Save Changes"
-                onClick={() => updateDB(0, fullname, email)}
-                //onClick={() => alert(id + fullname + email)}
+                onClick={() => updateDB(id, fullname, email)}
+              />
+              <Button
+                intent="none"
+                text="Cancel"
+                onClick={() => cancelForm()}
               />
             </div>
           )}
