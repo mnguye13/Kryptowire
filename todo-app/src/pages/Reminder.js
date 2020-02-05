@@ -20,8 +20,9 @@ import Login from "./Login";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setAuthenticate, setUnAuthenticate, setUser } from "../actions";
-import { authenticateSlice } from "../slice/setSlice";
+import { authenticateSlice, userSlice } from "../slice/setSlice";
 import { set } from "mongoose";
+import setAuthToken from "../authentication/setAuthToken";
 
 function Reminder() {
   const [names, setNames] = useState("Minh Nguyen");
@@ -247,7 +248,12 @@ function Reminder() {
   }
 
   function signout() {
+    localStorage.removeItem("jwtToken");
+    setAuthToken(false);
     dispatch(authenticateSlice.actions.setUnAuthenticate());
+    dispatch(
+      userSlice.actions.setUser({ id: null, name: null, iat: null, exp: null })
+    );
   }
 
   async function tick() {
@@ -265,7 +271,7 @@ function Reminder() {
       <div className="header">
         <img src={companylogo} className="logo1" alt="companylogo" />
         <h2 className="bp3-heading">
-          Hello <a className="nameField">{userData.username}</a>
+          Hello <a className="nameField">{userData.name}</a>
         </h2>
 
         {/*<input

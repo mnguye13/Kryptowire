@@ -26,6 +26,8 @@ import "./Login.css";
 import companylogo from "../kryptowire.png";
 import { Card, Logo, Form, Input, Error, Success } from "../AuthForms";
 import { useHistory } from "react-router-dom";
+import setAuthToken from "../authentication/setAuthToken";
+import jwt_decode from "jwt-decode";
 
 function Login(props) {
   const [username, setUsername] = useState("");
@@ -42,19 +44,38 @@ function Login(props) {
   function handleSubmit(event, props) {
     event.preventDefault();
     try {
-      if (username === users.user && password === users.pass) {
-        //dispatch(setAuthenticate());
-        dispatch(authenticateSlice.actions.setAuthenticate());
-        setIsError(false);
-        dispatch(
-          userSlice.actions.setUser({
-            username: username
-          })
-        );
-      } else {
-        setIsError(true);
-        console.log(isError);
-      }
+      axios
+        .post("http://localhost:3001/users/login", {
+          email: username,
+          password: password
+        })
+        .then(res => {
+          const { token } = res.data;
+          localStorage.setItem("jwtToken", token);
+          setAuthToken(token);
+          //Decode token to get user data
+          const decoded = jwt_decode(token);
+          console.log(decoded);
+          dispatch(userSlice.actions.setUser(decoded));
+          dispatch(authenticateSlice.actions.setAuthenticate());
+          setIsError(false);
+          history.push("/");
+          //Set current user
+
+          /*
+          if (res.data.success == true) {
+            dispatch(authenticateSlice.actions.setAuthenticate());
+            setIsError(false);
+            dispatch(
+              userSlice.actions.setUser({
+                username: username
+              })
+            );
+          } else {
+            setIsError(true);
+            console.log(isError);
+          }*/
+        });
     } catch (e) {
       alert(e.message);
     }

@@ -20,8 +20,10 @@ import "./Home.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { authenticateSlice } from "../slice/setSlice";
+import { userSlice } from "../slice/setSlice";
 import Weather from "../components/Weather";
 import { useTranslation, Trans } from "react-i18next";
+import setAuthToken from "../authentication/setAuthToken";
 //import i18n from "../localization/i18n";
 
 function Home(props) {
@@ -33,13 +35,18 @@ function Home(props) {
   const { t, i18n } = useTranslation();
 
   function signout() {
+    localStorage.removeItem("jwtToken");
+    setAuthToken(false);
     dispatch(authenticateSlice.actions.setUnAuthenticate());
+    dispatch(
+      userSlice.actions.setUser({ id: null, name: null, iat: null, exp: null })
+    );
   }
   function Welcome(props) {
     if (isAuthenticated)
       return (
         <div>
-          <h1>Welcome, {userData.username}</h1>
+          <h1>Welcome, {userData.name}</h1>
           <Button
             onClick={e => {
               signout();

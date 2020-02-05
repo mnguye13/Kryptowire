@@ -3,8 +3,10 @@ const mongoose = require("mongoose");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const { config } = require("./api/env");
+const { config } = require("./api/config/env");
 const infoRoutes = require("./api/routes/info");
+const userRoutes = require("./api/routes/users");
+const passport = require("passport");
 var cors = require("cors");
 
 mongoose
@@ -34,6 +36,14 @@ app.use((req, res, next) => {
   next();
 });*/
 app.use("/infos", infoRoutes);
+//Passport middleware
+app.use(passport.initialize());
+
+//Passport Config
+require("./api/config/passport")(passport);
+
+//Routes
+app.use("/users", userRoutes);
 
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
