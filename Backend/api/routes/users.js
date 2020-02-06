@@ -7,6 +7,40 @@ const validateRegisterInput = require("../../validation/register");
 const vaildateLoginInput = require("../../validation/login");
 const User = require("../models/user");
 
+const Controller = require("../controllers/userController");
+const userController = new Controller(User);
+
+router.post("/register", (req, res, next) => {
+  const { errors, isValid } = validateRegisterInput(req.body);
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  userController.createUser(req.body, (error, result) => {
+    handleCallBack(error, result, res);
+  });
+});
+
+router.post("/login", (req, res, next) => {
+  const { errors, isValid } = vaildateLoginInput(req.body);
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  userController.findUser(req.body, (error, result) => {
+    handleCallBack(error, result, res);
+  });
+});
+
+let handleCallBack = (error, result, response) => {
+  console.log("error: " + JSON.stringify(error));
+  console.log("result: " + JSON.stringify(result));
+
+  if (error) return response.status(500).json({ error: error });
+  return response.status(200).json(result);
+};
+/*
+
 // @route POST /register
 // @desc Register user
 // @access Public
@@ -97,5 +131,5 @@ router.post("/login", (req, res) => {
     });
   });
 });
-
+*/
 module.exports = router;
