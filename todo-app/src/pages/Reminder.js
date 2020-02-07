@@ -112,16 +112,20 @@ function Reminder() {
 
   //Function to create data to db
   function createDataToDB(fullname, email) {
-    let currentIds = data.map(data => data.id);
-    let idToBeAdded = 0;
-    while (currentIds.includes(idToBeAdded)) {
-      ++idToBeAdded;
+    if (!fullname || !email) {
+      alert("invalid input");
+    } else {
+      let currentIds = data.map(data => data.id);
+      let idToBeAdded = 0;
+      while (currentIds.includes(idToBeAdded)) {
+        ++idToBeAdded;
+      }
+      axios.post("http://localhost:3001/infos", {
+        id: idToBeAdded,
+        fullname: fullname,
+        email: email
+      });
     }
-    axios.post("http://localhost:3001/infos", {
-      id: idToBeAdded,
-      fullname: fullname,
-      email: email
-    });
 
     setFullName("");
     setEmail("");
@@ -147,21 +151,25 @@ function Reminder() {
 
   function updateDB(idToUpdate, updatedFullName, updadatedEmail) {
     console.log(idToUpdate, updatedFullName, updadatedEmail);
-    let objIdToUpdate = null;
-    parseInt(idToUpdate);
-    data.forEach(dat => {
-      if (dat.id == idToUpdate) {
-        objIdToUpdate = dat._id;
-      }
-    });
-    console.log(objIdToUpdate);
+    if (!idToUpdate || !updatedFullName || !updadatedEmail) {
+      alert("invalid input");
+    } else {
+      let objIdToUpdate = null;
+      parseInt(idToUpdate);
+      data.forEach(dat => {
+        if (dat.id == idToUpdate) {
+          objIdToUpdate = dat._id;
+        }
+      });
+      console.log(objIdToUpdate);
 
-    axios
-      .patch(`http://localhost:3001/infos/${objIdToUpdate}`, {
-        fullname: updatedFullName,
-        email: updadatedEmail
-      })
-      .then(response => console.log(response));
+      axios
+        .patch(`http://localhost:3001/infos/${objIdToUpdate}`, {
+          fullname: updatedFullName,
+          email: updadatedEmail
+        })
+        .then(response => console.log(response));
+    }
     setShowUpdateForm(false);
   }
 

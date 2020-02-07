@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ApolloClient, { gql } from "apollo-boost";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { findAllByTitle } from "@testing-library/react";
+import { config } from "../config/env";
 import {
   Button,
   Menu,
@@ -17,7 +18,7 @@ import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 export const client = new ApolloClient({
   uri: "https://api.github.com/graphql",
   request: operation => {
-    const token = "043c9810e3217509ec024ad3d91e925aad588c02";
+    const token = config.githubToken;
     operation.setContext({
       headers: {
         authorization: token ? `Bearer ${token}` : ""
