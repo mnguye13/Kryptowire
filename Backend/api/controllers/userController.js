@@ -10,6 +10,7 @@ class UserController extends Controller {
       this.DBModel.findOne({ email: data.email }).then(user => {
         if (user)
           return callback({ status: 400, message: "Email already exist" });
+
         bcrypt.genSalt(10, (err, salt) => {
           if (err) return callback(err);
           bcrypt.hash(data.password, salt, (err, hash) => {
