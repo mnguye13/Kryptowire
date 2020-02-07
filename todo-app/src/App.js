@@ -15,11 +15,31 @@ import Settings from "./pages/Settings";
 import Infos from "./pages/Infos";
 import SignUp from "./pages/Signup";
 import PrivateRoute from "./PrivateRoute";
-
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import jwt_decode from "jwt-decode";
+import setAuthToken from "./authentication/setAuthToken";
+import { userSlice, authenticateSlice } from "./slice/setSlice";
 
 function App(props) {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  if (localStorage.jwtToken) {
+    const token = localStorage.jwtToken;
+    setAuthToken(token);
+    const decoded = jwt_decode(token);
+    dispatch(authenticateSlice.actions.setAuthenticate());
+    dispatch(userSlice.actions.setUser(decoded));
+
+    const currentTime = Date.now() / 1000;
+
+    if (decoded.exp < currentTime) {
+      setAuthToken(false);
+      dispatch(authenticateSlice.actions.setUnAuthenticate());
+      dispatch(userSlice.actions.setUser({}));
+      history.push("/users");
+    }
+  }
   return (
     <Router>
       <nav className="bp3-navbar bp3-dark">
@@ -49,7 +69,7 @@ function App(props) {
         <Route path="/" exact component={Home} />
         <Route path="/users" component={Login} />
         <Route path="/reminder" component={Reminder} />
-        <Route path="/settings" component={Settings} />
+        <PrivateRoute path="/settings" component={Settings} />
         <Route path="/infos" component={Infos} />
         <Route path="/signup" component={SignUp} />
         <Route path="*" component={() => "404 NOT FOUND"} />
