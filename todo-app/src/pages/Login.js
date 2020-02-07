@@ -42,27 +42,30 @@ function Login(props) {
   if (isAuthenticated) history.push("/reminder");
 
   function handleSubmit(event, props) {
-    event.preventDefault();
-    try {
-      axios
-        .post("http://localhost:3001/users/login", {
-          email: username,
-          password: password
-        })
-        .then(res => {
-          const { token } = res.data;
-          localStorage.setItem("jwtToken", token);
-          setAuthToken(token);
-          //Decode token to get user data
-          const decoded = jwt_decode(token);
-          console.log(decoded);
-          dispatch(userSlice.actions.setUser(decoded));
-          dispatch(authenticateSlice.actions.setAuthenticate());
-          setIsError(false);
-          history.push("/");
-          //Set current user
+    if (!username || !password) {
+      alert("invalid input");
+    } else {
+      event.preventDefault();
+      try {
+        axios
+          .post("http://localhost:3001/users/login", {
+            email: username,
+            password: password
+          })
+          .then(res => {
+            const { token } = res.data;
+            localStorage.setItem("jwtToken", token);
+            setAuthToken(token);
+            //Decode token to get user data
+            const decoded = jwt_decode(token);
+            console.log(decoded);
+            dispatch(userSlice.actions.setUser(decoded));
+            dispatch(authenticateSlice.actions.setAuthenticate());
+            setIsError(false);
+            history.push("/");
+            //Set current user
 
-          /*
+            /*
           if (res.data.success == true) {
             dispatch(authenticateSlice.actions.setAuthenticate());
             setIsError(false);
@@ -75,9 +78,10 @@ function Login(props) {
             setIsError(true);
             console.log(isError);
           }*/
-        });
-    } catch (e) {
-      alert(e.message);
+          });
+      } catch (e) {
+        alert(e.message);
+      }
     }
   }
 
