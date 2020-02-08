@@ -1,8 +1,10 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const Controller = require("./controller");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { config } = require("../config/env");
+const ObjectId = mongoose.Types.ObjectId;
 
 class UserController extends Controller {
   createUser(data, callback) {
@@ -55,6 +57,17 @@ class UserController extends Controller {
     } catch (err) {
       callback(err);
     }
+  }
+
+  find(id, callback) {
+    this.DBModel.findOne({ _id: ObjectId(id) }, (err, res) => {
+      let newRes = new Object();
+      newRes.id = res._id;
+      newRes.name = res.name;
+      newRes.email = res.email;
+
+      callback(err, newRes);
+    });
   }
 }
 module.exports = UserController;

@@ -32,6 +32,12 @@ router.post("/login", (req, res, next) => {
   });
 });
 
+router.get("/:id", (req, res, next) => {
+  userController.find(req.params.id, (error, result) => {
+    handleCallBack(error, result, res);
+  });
+});
+
 let handleCallBack = (error, result, response) => {
   console.log("error: " + JSON.stringify(error));
   console.log("result: " + JSON.stringify(result));

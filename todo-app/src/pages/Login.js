@@ -62,7 +62,7 @@ function Login(props) {
             dispatch(userSlice.actions.setUser(decoded));
             dispatch(authenticateSlice.actions.setAuthenticate());
             setIsError(false);
-            history.push("/");
+            history.push("/profile");
             //Set current user
 
             /*

@@ -9,6 +9,7 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import { BrowserRouter as Router, Link, Switch, Route } from "react-router-dom";
 import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 import Reminder from "./pages/Reminder";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
@@ -34,10 +35,11 @@ function App(props) {
     const currentTime = Date.now() / 1000;
 
     if (decoded.exp < currentTime) {
+      localStorage.removeItem("jwtToken");
       setAuthToken(false);
       dispatch(authenticateSlice.actions.setUnAuthenticate());
       dispatch(userSlice.actions.setUser({}));
-      history.push("/users");
+      //history.push("/users");
     }
   }
   return (
@@ -53,7 +55,7 @@ function App(props) {
             </button>
           </Link>
           <span className="bp3-navbar-divider"></span>
-          <Link to="/users">
+          <Link to="/profile">
             <button className="bp3-button bp3-minimal bp3-icon-user"></button>
           </Link>
           <Link to="/reminder">
@@ -70,6 +72,7 @@ function App(props) {
         <Route path="/users" component={Login} />
         <Route path="/reminder" component={Reminder} />
         <PrivateRoute path="/settings" component={Settings} />
+        <PrivateRoute path="/profile" component={Profile} />
         <Route path="/infos" component={Infos} />
         <Route path="/signup" component={SignUp} />
         <Route path="*" component={() => "404 NOT FOUND"} />
