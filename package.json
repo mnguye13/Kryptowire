@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"cd Backend && node server.js\" \"cd todo-app && npm start\"",
+    "start": "concurrently \"cd Backend && nodemon server.js\" \"cd todo-app && npm start\"",
     "server": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,11 +12,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-server": "^2.10.0",
+    "apollo-server-express": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "concurrently": "^5.1.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "graphql": "^14.6.0",
+    "graphql-tools": "^4.0.6",
     "is-empty": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.11",

@@ -6,10 +6,13 @@ class Controller {
     this.DBModel = DBModel;
   }
 
-  create(data, callback) {
-    this.DBModel.create(data, (err, res) => {
-      callback(err, res);
-    });
+  async create(data, callback) {
+    try {
+      let res = await this.DBModel.create(data);
+      return callback(null, res);
+    } catch (err) {
+      return callback(err);
+    }
   }
   getAll(callback) {
     this.DBModel.find({}, (err, res) => {

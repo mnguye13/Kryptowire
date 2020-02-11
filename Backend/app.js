@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const { config } = require("./api/config/env");
 const infoRoutes = require("./api/routes/info");
 const userRoutes = require("./api/routes/users");
+const Cars = require("./api/models/cars");
+const { graphqlExpress, graphiqlExpress } = require("apollo-server-express");
 const passport = require("passport");
 var cors = require("cors");
 
@@ -44,6 +46,11 @@ require("./api/config/passport")(passport);
 
 //Routes
 app.use("/users", userRoutes);
+
+//GraphQL endpoints
+
+app.use("/graphql", graphqlExpress({ schema: Cars }));
+app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
