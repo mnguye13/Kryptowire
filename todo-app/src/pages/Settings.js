@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ApolloClient, { gql } from "apollo-boost";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/react-hooks";
 import { findAllByTitle } from "@testing-library/react";
 import { config } from "../config/env";
 import {
@@ -27,7 +27,7 @@ export const client = new ApolloClient({
   }
 });
 const githubData = gql`
-  {
+  query GithubData($name: String!) {
     user(login: "mnguye13") {
       name
       bio
@@ -39,7 +39,7 @@ const githubData = gql`
           }
         }
       }
-      repository(name: "kryptowire") {
+      repository(name: $name) {
         name
         id
         url
@@ -70,10 +70,16 @@ const createIssue = gql`
 export default function Settings() {
   const [issueTitle, setIssueTitle] = useState();
   const [issueBody, setIssueBody] = useState();
+  const [repoName, setRepoName] = useState("Kryptowire");
   const [repoID, setRepoID] = useState();
-  const { loading, error, data } = useQuery(githubData);
+  //const [getRepo, { loading, error, data }] = useQuery(githubData);
+  const [getRepo, { loading, error, data }] = useLazyQuery(githubData);
   const [addIssue, { issueData }] = useMutation(createIssue);
-  let data2;
+  useEffect(() => {
+    getRepo({ variables: { name: "Kryptowire" } });
+  }, []);
+
+  let data2 = [];
   if (data) {
     data2 = Object.values(data);
     /*
@@ -97,9 +103,29 @@ export default function Settings() {
     setIssueTitle("");
     setIssueBody("");
   }
+  function searchRepo(repo) {
+    console.log(repo);
+    if (!repo) {
+      alert("Invalid Input");
+    } else {
+      getRepo({ variables: { name: repoName } });
+    }
+    setRepoName("");
+  }
 
   return (
     <div>
+      <div style={{ width: "50%" }}>
+        <h1>Repository Info</h1>
+        <InputGroup
+          fill
+          value={repoName}
+          onChange={e => setRepoName(e.target.value)}
+          placeholder="Enter resporiory"
+        ></InputGroup>
+      </div>
+      <Button text="Search" onClick={() => searchRepo(repoName)} />
+
       {data2.length <= 0 ? (
         <div>
           <p>Loading..</p>
@@ -113,6 +139,7 @@ export default function Settings() {
             {dat.repositories.edges.map(e => (
               <p>{e.node.nameWithOwner}</p>
             ))}
+
             <h2>Repository: {dat.repository.name}</h2>
             <p>ID: {dat.repository.id}</p>
             <p>URL: {dat.repository.url}</p>
