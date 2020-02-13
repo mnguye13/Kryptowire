@@ -115,17 +115,6 @@ export default function Settings() {
 
   return (
     <div>
-      <div style={{ width: "50%" }}>
-        <h1>Repository Info</h1>
-        <InputGroup
-          fill
-          value={repoName}
-          onChange={e => setRepoName(e.target.value)}
-          placeholder="Enter resporiory"
-        ></InputGroup>
-      </div>
-      <Button text="Search" onClick={() => searchRepo(repoName)} />
-
       {data2.length <= 0 ? (
         <div>
           <p>Loading..</p>
@@ -139,30 +128,47 @@ export default function Settings() {
             {dat.repositories.edges.map(e => (
               <p>{e.node.nameWithOwner}</p>
             ))}
-
-            <h2>Repository: {dat.repository.name}</h2>
-            <p>ID: {dat.repository.id}</p>
-            <p>URL: {dat.repository.url}</p>
-            <p>OwnerID: {dat.repository.owner.id}</p>
-            <p>CreateAt: {dat.repository.createdAt}</p>
-            <h3>Issue Report for {dat.repository.name} repository</h3>
             <div style={{ width: "50%" }}>
+              <h1>Repository Info</h1>
               <InputGroup
-                value={issueTitle}
-                onChange={e => setIssueTitle(e.target.value)}
-                placeholder="Enter issue title"
-              ></InputGroup>
-              <TextArea
                 fill
-                value={issueBody}
-                onChange={e => setIssueBody(e.target.value)}
-                placeholder="Enter issue body"
-              ></TextArea>
+                value={repoName}
+                onChange={e => setRepoName(e.target.value)}
+                placeholder="Enter resporiory"
+              ></InputGroup>
             </div>
-            <Button
-              text="Create Issue"
-              onClick={() => submitIssue(dat.repository.id)}
-            />
+            <Button text="Search" onClick={() => searchRepo(repoName)} />
+            {!dat.repository ? (
+              <div>
+                <p> Repo not found! </p>{" "}
+              </div>
+            ) : (
+              <div>
+                <h2>Repository: {dat.repository.name}</h2>
+                <p>ID: {dat.repository.id}</p>
+                <p>URL: {dat.repository.url}</p>
+                <p>OwnerID: {dat.repository.owner.id}</p>
+                <p>CreateAt: {dat.repository.createdAt}</p>
+                <h3>Issue Report for {dat.repository.name} repository</h3>
+                <div style={{ width: "50%" }}>
+                  <InputGroup
+                    value={issueTitle}
+                    onChange={e => setIssueTitle(e.target.value)}
+                    placeholder="Enter issue title"
+                  ></InputGroup>
+                  <TextArea
+                    fill
+                    value={issueBody}
+                    onChange={e => setIssueBody(e.target.value)}
+                    placeholder="Enter issue body"
+                  ></TextArea>
+                </div>
+                <Button
+                  text="Create Issue"
+                  onClick={() => submitIssue(dat.repository.id)}
+                />
+              </div>
+            )}
           </div>
         ))
       )}

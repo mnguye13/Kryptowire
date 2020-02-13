@@ -31,21 +31,10 @@ import jwt_decode from "jwt-decode";
 
 export default function Profile() {
   const userData = useSelector(state => state.setUser);
-  const [user, setUser] = useState([]);
   function getProfile() {
     axios
-      .get(`http://localhost:3001/users/${userData.id}`)
-      .then(res => setUser(res.data));
+      .get(`http://localhost:3001/users/`)
+      .then(res => console.log(res.data));
   }
-  useEffect(() => {
-    getProfile();
-  }, []);
-
-  return (
-    <div>
-      <h1>Profile</h1>
-      <h2>{user.name}</h2>
-      <h3>{user.email}</h3>
-    </div>
-  );
+  return <div></div>;
 }
