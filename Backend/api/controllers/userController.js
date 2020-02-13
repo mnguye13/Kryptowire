@@ -9,13 +9,13 @@ const ObjectId = mongoose.Types.ObjectId;
 class UserController extends Controller {
   async createUser(data, callback) {
     try {
-      let user = await this.DBModel.findOne({ email: data.email });
+      const user = await this.DBModel.findOne({ email: data.email });
       if (user)
         return callback({ status: 400, message: "Email already exist" });
-      let salt = await bcrypt.genSalt(10);
-      let hash = await bcrypt.hash(data.password, salt);
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(data.password, salt);
       data.password = hash;
-      let res = await this.DBModel.create(data);
+      const res = await this.DBModel.create(data);
       callback(null, res);
     } catch (err) {
       callback(err, null);
@@ -26,9 +26,9 @@ class UserController extends Controller {
     try {
       const email = data.email;
       const password = data.password;
-      let user = await this.DBModel.findOne({ email: email });
+      const user = await this.DBModel.findOne({ email: email });
       if (!user) return callback({ status: 400, message: "user not found" });
-      let isMatch = bcrypt.compare(password, user.password);
+      const isMatch = bcrypt.compare(password, user.password);
       if (!isMatch) return callback({ status: 400, message: "User not Found" });
       const payload = { id: user._id, name: user.name };
       jwt.sign(
@@ -49,7 +49,7 @@ class UserController extends Controller {
   async find(id, callback) {
     try {
       const res = await this.DBModel.findOne({ _id: ObjectId(id) });
-      let newRes = new Object();
+      const newRes = new Object();
       newRes.id = res._id;
       newRes.name = res.name;
       newRes.email = res.email;
