@@ -28,7 +28,7 @@ class UserController extends Controller {
       const password = data.password;
       const user = await this.DBModel.findOne({ email: email });
       if (!user) return callback({ status: 400, message: "user not found" });
-      const isMatch = bcrypt.compare(password, user.password);
+      const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return callback({ status: 400, message: "User not Found" });
       const payload = { id: user._id, name: user.name };
       jwt.sign(

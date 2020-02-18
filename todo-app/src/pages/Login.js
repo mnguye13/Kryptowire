@@ -53,11 +53,12 @@ function Login(props) {
             password: password
           })
           .then(res => {
-            const { token } = res.data;
-            localStorage.setItem("jwtToken", token);
-            setAuthToken(token);
+            const { accessToken } = res.data;
+            console.log(res.data);
+            localStorage.setItem("jwtToken", accessToken);
+            setAuthToken(accessToken);
             //Decode token to get user data
-            const decoded = jwt_decode(token);
+            const decoded = jwt_decode(accessToken);
             console.log(decoded);
             dispatch(userSlice.actions.setUser(decoded));
             dispatch(authenticateSlice.actions.setAuthenticate());

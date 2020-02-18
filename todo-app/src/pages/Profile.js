@@ -30,11 +30,23 @@ import setAuthToken from "../authentication/setAuthToken";
 import jwt_decode from "jwt-decode";
 
 export default function Profile() {
+  const [profile, setProfile] = useState([]);
   const userData = useSelector(state => state.setUser);
   function getProfile() {
-    axios
-      .get(`http://localhost:3001/users/`)
-      .then(res => console.log(res.data));
+    axios.get(`http://localhost:3001/users/${userData.id}`).then(res => {
+      console.log(res.data);
+      setProfile(res.data);
+    });
   }
-  return <div></div>;
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  console.log(profile);
+  return (
+    <div>
+      <h1>{profile.name}</h1>
+      <h1>{profile.email}</h1>
+    </div>
+  );
 }

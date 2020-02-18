@@ -107,7 +107,7 @@ function Reminder() {
   function getDataFromDB() {
     fetch("http://localhost:3001/infos")
       .then(data => data.json())
-      .then(res => setData(res.data));
+      .then(res => setData(res));
   }
 
   //Function to create data to db
@@ -272,6 +272,8 @@ function Reminder() {
   var incomplete = incompleteTasks();
   var progress = (completeTasks() / todos.length) * 100;
   var clock = timer();
+
+  console.log(data);
 
   return (
     <div className="app">
