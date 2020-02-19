@@ -38,7 +38,9 @@ function App(props) {
       localStorage.removeItem("jwtToken");
       setAuthToken(false);
       dispatch(authenticateSlice.actions.setUnAuthenticate());
-      dispatch(userSlice.actions.setUser({}));
+      dispatch(
+        userSlice.actions.setUser({ id: null, email: null, name: null })
+      );
       //history.push("/users");
     }
   }

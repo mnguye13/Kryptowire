@@ -32,11 +32,16 @@ import jwt_decode from "jwt-decode";
 export default function Profile() {
   const [profile, setProfile] = useState([]);
   const userData = useSelector(state => state.setUser);
+  const token = "Bearer " + localStorage.getItem("jwtToken");
   function getProfile() {
-    axios.get(`http://localhost:3001/users/${userData.id}`).then(res => {
-      console.log(res.data);
-      setProfile(res.data);
-    });
+    axios
+      .get(`http://localhost:3001/users/profile`, {
+        headers: { Authorization: token }
+      })
+      .then(res => {
+        console.log(res.data);
+        setProfile(res.data);
+      });
   }
   useEffect(() => {
     getProfile();

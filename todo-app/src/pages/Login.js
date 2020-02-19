@@ -55,15 +55,19 @@ function Login(props) {
           .then(res => {
             const { accessToken } = res.data;
             console.log(res.data);
-            localStorage.setItem("jwtToken", accessToken);
-            setAuthToken(accessToken);
-            //Decode token to get user data
-            const decoded = jwt_decode(accessToken);
-            console.log(decoded);
-            dispatch(userSlice.actions.setUser(decoded));
-            dispatch(authenticateSlice.actions.setAuthenticate());
-            setIsError(false);
-            history.push("/profile");
+            if (accessToken) {
+              localStorage.setItem("jwtToken", accessToken);
+              setAuthToken(accessToken);
+              //Decode token to get user data
+              const decoded = jwt_decode(accessToken);
+              console.log(decoded);
+              dispatch(userSlice.actions.setUser(decoded));
+              dispatch(authenticateSlice.actions.setAuthenticate());
+              setIsError(false);
+              history.push("/profile");
+            } else {
+              setIsError(true);
+            }
             //Set current user
 
             /*
